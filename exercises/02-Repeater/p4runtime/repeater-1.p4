@@ -6,20 +6,10 @@
 *********************** H E A D E R S  ***********************************
 *************************************************************************/
 
-typedef bit<48> macAddr_t;
-
-header ethernet_t {
-    macAddr_t dstAddr;
-    macAddr_t srcAddr;
-    bit<16>   etherType;
-}
-
 struct metadata {
-    /* empty */
 }
 
 struct headers {
-    ethernet_t   ethernet;
 }
 
 /*************************************************************************
@@ -32,10 +22,8 @@ parser MyParser(packet_in packet,
                 inout standard_metadata_t standard_metadata) {
 
       state start{
-        packet.extract(hdr.ethernet);
-        transition accept;
+          transition accept;
       }
-
 }
 
 /*************************************************************************
@@ -55,21 +43,16 @@ control MyIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
 
-    action swap_mac(){
-        macAddr_t tmp; // On crée une variable de type macAddr
-
-         //On échange src et dest address
-        tmp = hdr.ethernet.srcAddr;
-        hdr.ethernet.srcAddr = hdr.ethernet.dstAddr;
-        hdr.ethernet.dstAddr = tmp;
-    }
-
     apply {
-        // On échange les addresses mac (de manière à renvoyer le paquet)
-        swap_mac();
 
-        // On répond sur le même port que l'envoi
-        standard_metadata.egress_spec = standard_metadata.ingress_port;
+        /* Solution 1: Without tables, write the algorithm directly here*/
+        // Si la donnée arrive par le port 1, on l'envoie sur le port 2
+        if(standard_metadata.ingress_port == 1) {
+            standard_metadata.egress_spec = 2;
+        }
+        else {
+            standard_metadata.egress_spec = 1;
+        }
     }
 }
 
@@ -97,10 +80,10 @@ control MyComputeChecksum(inout headers  hdr, inout metadata meta) {
 
 control MyDeparser(packet_out packet, in headers hdr) {
     apply {
-        // On renvoie la nouvelle trame, avec le tout swapé
-        packet.emit(hdr.ethernet);
-        
-	}
+
+    /* Deparser not needed */
+
+    }
 }
 
 /*************************************************************************
@@ -108,10 +91,10 @@ control MyDeparser(packet_out packet, in headers hdr) {
 *************************************************************************/
 
 V1Switch(
-	MyParser(),
-	MyVerifyChecksum(),
-	MyIngress(),
-	MyEgress(),
-	MyComputeChecksum(),
-	MyDeparser()
+MyParser(),
+MyVerifyChecksum(),
+MyIngress(),
+MyEgress(),
+MyComputeChecksum(),
+MyDeparser()
 ) main;

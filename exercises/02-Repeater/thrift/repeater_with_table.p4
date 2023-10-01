@@ -43,15 +43,30 @@ control MyIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
 
-    /* TODO 1: For solution 2 -> define a table that matches standard_metadata.ingress_port */
-    /* TODO 2: For solution 2 -> define an action that modifies the egress_port */
+    // On transforme le port d'entré en port de sortie
+    action forward(bit<9> ingress_port){
+        standard_metadata.egress_spec = ingress_port;
+    }
+
+
+    // On défini une table
+    table t {
+        // On stockera la valeur du port d'entré
+        key = {
+            standard_metadata.ingress_port: exact;
+        }
+        actions = {
+            forward; // Quand on recevra un truc dans la table, on effectue l'action "forward"
+            NoAction;
+        }
+        size = 2; // La table fera 2 de taille (que 2 hotes)
+        default_action = NoAction;
+    }
+
 
     apply {
-
-        /* TODO 3:*/
-        /* Solution 1: Without tables, write the algorithm directly here*/
-        /* Solution 2: Apply the table you use */
-
+        // On applique la table
+        t.apply();
     }
 }
 

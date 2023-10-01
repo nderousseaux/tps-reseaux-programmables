@@ -12,4 +12,9 @@ for switch, data in topo.get_p4rtswitches().items():
 
 controller = controllers['s1']                        
 
-# TODO: write the forwarding rules for the switch
+# On vide la table, dans le doute
+controller.table_clear('t')
+
+# On ajoute les données de la table
+controller.table_add('t', 'forward', ['1'], ['2'])
+controller.table_add('t', 'forward', ['2'], ['1'])

@@ -486,3 +486,5 @@ pcap*/
 *.bbl
 *.log
 *.out
+
+*.qcow2
