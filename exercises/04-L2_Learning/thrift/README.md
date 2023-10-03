@@ -9,7 +9,6 @@ the feature of forwarding packets for unknown and broadcast destinations.
 <p align="center">
 <img src="images/l2_topology.png" title="L2 Star Topology">
 <p/>
-
 In this exercise we will add the cherry on the cake. We will make the switch a bit smarter and add to it the
 capability of learning MAC addresses to port mappings autonomously, as a regular L2 switch would do. Thus,
 we will not need to add manually the `mac_address` to `output_port` mapping as we were doing in the previous
@@ -35,7 +34,7 @@ ways of transmitting information to the controller: cloning packets to the contr
 
 For this exercise the files we provide you are:
 
-- `p4app_cpu.json` and `p4app_digest.json`: two p4 utils configuration files. They define the same star topology used in previous exercises. `p4app_cpu.json` and `p4app_digest.json`: two p4 utils configuration files. They define the same star topology used in previous exercises.
+- `p4app_cpu.json` and `p4app_digest.json`: two p4 utils configuration files. They define the same star topology used in previous exercises.
 - `network_cpu.py` and `network_digest.py`: *P4-Utils* topology initilization scripts that can be used instead of the JSON configuration files to run the network.
 - `p4src/l2_learning_copy_to_cpu.p4` and `p4src/l2_learning_digest.p4`: p4 program skeletons. Each skeleton will be used for one version
   of the solution.
@@ -125,7 +124,7 @@ set the metadata field you defined in 3 to `standard_metadata.ingress_port` and 
    * First check that the `instance_type` is equal to 1 (which means that the packet is an ingress clone).
    * Now you will use the `cpu` header you defined in 2 to add the learning information we want to send to the controller. To
     enable the header you need to set it valid using `setValid()`.  Fill the `cpu` headers fields with the mac source port and
-    ingress_port.
+     ingress_port.
    * Finally set the `hdr.ethernet.etherType` to `0x1234`. The controller uses to filter packets.
 
 10. Emit the new header you created (only valid headers are put back to the packet).

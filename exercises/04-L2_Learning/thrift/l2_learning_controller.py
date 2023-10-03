@@ -57,6 +57,8 @@ class L2Controller(object):
             #TODO: Add an entry to smac
             #TODO: Add an entry to dmac
             #HINT: table_add(table_name, action_name, list of matches, list of action parameters)
+            self.controller.table_add("smac", "NoAction", [str(mac_addr)])
+            self.controller.table_add("dmac", "forward", [str(mac_addr)], [str(ingress_port)])
 
     def unpack_digest(self, msg, num_samples):
         digest = []
