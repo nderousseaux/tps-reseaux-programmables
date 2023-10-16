@@ -114,17 +114,6 @@ control MyIngress(inout headers hdr,
             }
         }
 
-        /* Alternative Solution (even easier)
-
-        if (dmac.apply().hit){
-
-        }
-        else {
-            select_mcast_grp.apply();
-        }
-
-        End of Alternative solution
-        */
 
     }
 }
