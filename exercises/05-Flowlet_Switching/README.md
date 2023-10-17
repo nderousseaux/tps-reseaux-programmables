@@ -2,16 +2,10 @@
 
 ## Introduction
 
-In the previous exercise we implemented ECMP, a very basic (but widely used) technique to load balance traffic across
-multiple equal cost paths. ECMP works very well when it has to load balance many small flows with similar sizes (since it
-randomly maps them to one of the possible paths). However, real traffic does not look as described above, real traffic is composed by many
-small flows, but also but very few that are quite bigger. This makes ECMP suffer from a well-known performance problem such as hash collisions,
-in which few big flows end up colliding in the same path. In this exercise we will use state and information provided by the simple_switch's
-`standard_metadata` to fix the collision problem of ECMP, by implementing flowlet switching on top.
+In the previous exercise we implemented ECMP, a very basic (but widely used) technique to load balance traffic across multiple equal cost paths. ECMP works very well when it has to load balance many small flows with similar sizes (since it randomly maps them to one of the possible paths). However, real traffic does not look as described above, real traffic is composed by many small flows, but also but very few that are quite bigger. This makes ECMP suffer from a well-known performance problem such as hash collisions,
+in which few big flows end up colliding in the same path. In this exercise we will use state and information provided by the simple_switch's `standard_metadata` to fix the collision problem of ECMP, by implementing flowlet switching on top.
 
-Flowlet switching leverages the burstiness of TCP flows to achieve a better load balancing. TCP flows tend to come in bursts (for instance because
-a flow needs to wait to get window space). Every time there is gap which is big enough (i.e., 50ms) between packets from the same flow, flowlet switching
-will rehash the flow to another path (by hashing an ID value together with the 5-tuple).
+Flowlet switching leverages the burstiness of TCP flows to achieve a better load balancing. TCP flows tend to come in bursts (for instance because a flow needs to wait to get window space). Every time there is gap which is big enough (i.e., 50ms) between packets from the same flow, flowlet switching will rehash the flow to another path (by hashing an ID value together with the 5-tuple).
 
 For more information about flowlet switching check out this [paper](https://www.usenix.org/system/files/conference/nsdi17/nsdi17-vanini.pdf)
 
@@ -37,7 +31,7 @@ the option is set to `mixed`. Therefore, only hosts connected to the same switch
 to a different switch will belong to a different `/24` subnet. If you use the namings `hY` and `sX` (e.g h1, h2, s1...), the IP assignment
 goes as follows: `10.x.x.y`. Where `x` is the switch id (upper and lower bytes), and `y` is the host id. For example, in the topology above,
 `h1` gets `10.0.1.1` and `h2` gets `10.0.2.2`.
- 
+
 You can find all the documentation about `p4app.json` in the `p4-utils` [documentation](https://nsg-ethz.github.io/p4-utils/usage.html#json). Also, you can find information about assignment strategies [here](https://nsg-ethz.github.io/p4-utils/usage.html#automated-assignment-strategies).
 
 ## Implementing the flowlet switching enhancement
